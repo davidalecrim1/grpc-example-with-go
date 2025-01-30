@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/google/uuid"
 )
@@ -21,6 +22,7 @@ func NewProduct(name string) *Product {
 
 type ProductService struct {
 	products []*Product
+	mu       sync.RWMutex
 }
 
 func NewProductService() *ProductService {
@@ -28,10 +30,14 @@ func NewProductService() *ProductService {
 }
 
 func (s *ProductService) Add(p *Product) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	s.products = append(s.products, p)
 }
 
 func (s *ProductService) Delete(id string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	for i, p := range s.products {
 		if p.Id == id {
 			s.products = append(s.products[:i], s.products[i+1:]...)
@@ -41,6 +47,8 @@ func (s *ProductService) Delete(id string) {
 }
 
 func (s *ProductService) Get(id string) (*Product, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 	for _, p := range s.products {
 		if p.Id == id {
 			return p, nil
@@ -51,6 +59,8 @@ func (s *ProductService) Get(id string) (*Product, error) {
 }
 
 func (s *ProductService) Update(u *Product) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 	for i, p := range s.products {
 		if p.Id == u.Id {
 			s.products[i] = u
