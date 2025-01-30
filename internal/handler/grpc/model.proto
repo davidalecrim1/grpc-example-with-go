@@ -1,0 +1,16 @@
+syntax = "proto3"; // grpc syntax version
+
+option go_package = "internal/handler/grpc/generated"; // go package name
+
+message ProductRequest {
+    string name = 1;
+}
+
+message ProductResponse {
+    string id = 1;
+    string name = 2;
+}
+
+service ProductHandler {
+    rpc Create(ProductRequest) returns (ProductResponse) {};
+}
