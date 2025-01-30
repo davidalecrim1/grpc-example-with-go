@@ -20,13 +20,19 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	ProductHandler_Create_FullMethodName = "/ProductHandler/Create"
+	ProductHandler_Update_FullMethodName = "/ProductHandler/Update"
+	ProductHandler_Delete_FullMethodName = "/ProductHandler/Delete"
+	ProductHandler_Get_FullMethodName    = "/ProductHandler/Get"
 )
 
 // ProductHandlerClient is the client API for ProductHandler service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProductHandlerClient interface {
-	Create(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*ProductResponse, error)
+	Create(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
+	Update(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductResponse, error)
+	Delete(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*DeleteProductResponse, error)
+	Get(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*GetProductResponse, error)
 }
 
 type productHandlerClient struct {
@@ -37,9 +43,36 @@ func NewProductHandlerClient(cc grpc.ClientConnInterface) ProductHandlerClient {
 	return &productHandlerClient{cc}
 }
 
-func (c *productHandlerClient) Create(ctx context.Context, in *ProductRequest, opts ...grpc.CallOption) (*ProductResponse, error) {
-	out := new(ProductResponse)
+func (c *productHandlerClient) Create(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error) {
+	out := new(CreateProductResponse)
 	err := c.cc.Invoke(ctx, ProductHandler_Create_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productHandlerClient) Update(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductResponse, error) {
+	out := new(UpdateProductResponse)
+	err := c.cc.Invoke(ctx, ProductHandler_Update_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productHandlerClient) Delete(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*DeleteProductResponse, error) {
+	out := new(DeleteProductResponse)
+	err := c.cc.Invoke(ctx, ProductHandler_Delete_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productHandlerClient) Get(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*GetProductResponse, error) {
+	out := new(GetProductResponse)
+	err := c.cc.Invoke(ctx, ProductHandler_Get_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +83,10 @@ func (c *productHandlerClient) Create(ctx context.Context, in *ProductRequest, o
 // All implementations must embed UnimplementedProductHandlerServer
 // for forward compatibility
 type ProductHandlerServer interface {
-	Create(context.Context, *ProductRequest) (*ProductResponse, error)
+	Create(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
+	Update(context.Context, *UpdateProductRequest) (*UpdateProductResponse, error)
+	Delete(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error)
+	Get(context.Context, *GetProductRequest) (*GetProductResponse, error)
 	mustEmbedUnimplementedProductHandlerServer()
 }
 
@@ -58,8 +94,17 @@ type ProductHandlerServer interface {
 type UnimplementedProductHandlerServer struct {
 }
 
-func (UnimplementedProductHandlerServer) Create(context.Context, *ProductRequest) (*ProductResponse, error) {
+func (UnimplementedProductHandlerServer) Create(context.Context, *CreateProductRequest) (*CreateProductResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedProductHandlerServer) Update(context.Context, *UpdateProductRequest) (*UpdateProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedProductHandlerServer) Delete(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedProductHandlerServer) Get(context.Context, *GetProductRequest) (*GetProductResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
 func (UnimplementedProductHandlerServer) mustEmbedUnimplementedProductHandlerServer() {}
 
@@ -75,7 +120,7 @@ func RegisterProductHandlerServer(s grpc.ServiceRegistrar, srv ProductHandlerSer
 }
 
 func _ProductHandler_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductRequest)
+	in := new(CreateProductRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -87,7 +132,61 @@ func _ProductHandler_Create_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: ProductHandler_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductHandlerServer).Create(ctx, req.(*ProductRequest))
+		return srv.(ProductHandlerServer).Create(ctx, req.(*CreateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductHandler_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductHandlerServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductHandler_Update_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductHandlerServer).Update(ctx, req.(*UpdateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductHandler_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductHandlerServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductHandler_Delete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductHandlerServer).Delete(ctx, req.(*DeleteProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProductHandler_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductHandlerServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ProductHandler_Get_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductHandlerServer).Get(ctx, req.(*GetProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -102,6 +201,18 @@ var ProductHandler_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _ProductHandler_Create_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ProductHandler_Update_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _ProductHandler_Delete_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _ProductHandler_Get_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

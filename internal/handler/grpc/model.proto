@@ -2,15 +2,46 @@ syntax = "proto3"; // grpc syntax version
 
 option go_package = "internal/handler/grpc/generated"; // go package name
 
-message ProductRequest {
+message CreateProductRequest {
     string name = 1;
 }
 
-message ProductResponse {
+message CreateProductResponse {
     string id = 1;
     string name = 2;
 }
 
+message UpdateProductRequest {
+    string id = 1;
+    string name = 2;
+}
+
+message UpdateProductResponse {
+    bool success = 1;
+}
+
+message GetProductRequest {
+    string id = 1;
+}
+
+message GetProductResponse {
+    bool success = 1;
+    string id = 2;
+    string name = 3;
+}
+
+message DeleteProductRequest {
+    string id = 1;
+}
+
+message DeleteProductResponse {
+    bool success = 1;
+}
+
 service ProductHandler {
-    rpc Create(ProductRequest) returns (ProductResponse) {};
+    rpc Create(CreateProductRequest) returns (CreateProductResponse) {};
+    rpc Update(UpdateProductRequest) returns (UpdateProductResponse) {};
+    rpc Delete(DeleteProductRequest) returns (DeleteProductResponse) {};
+    rpc Get(GetProductRequest) returns (GetProductResponse) {};
+
 }

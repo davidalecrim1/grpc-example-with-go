@@ -18,4 +18,6 @@ docker-build:
 	docker build -t grpc-example-with-go .
 
 docker-run:
+	docker stop grpc-example-with-go
+	docker rm grpc-example-with-go
 	docker run -d --name grpc-example-with-go -p 50051:50051 grpc-example-with-go

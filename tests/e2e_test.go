@@ -75,7 +75,7 @@ func TestE2E(t *testing.T) {
 	t.Run("valid product creation", func(t *testing.T) {
 		client := gen.NewProductHandlerClient(conn)
 
-		req := &gen.ProductRequest{
+		req := &gen.CreateProductRequest{
 			Name: "Test-Product-001",
 		}
 
