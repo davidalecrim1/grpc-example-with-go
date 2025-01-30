@@ -85,4 +85,74 @@ func TestE2E(t *testing.T) {
 		assert.Equal(t, res.Name, req.Name)
 		assert.NotEmpty(t, res.Id)
 	})
+
+	t.Run("valid product update", func(t *testing.T) {
+		client := gen.NewProductHandlerClient(conn)
+
+		req := &gen.CreateProductRequest{
+			Name: "Test-Product-001",
+		}
+
+		res, err := client.Create(context.Background(), req)
+		require.NoError(t, err)
+
+		req1 := &gen.GetProductRequest{
+			Id: res.Id,
+		}
+		p1, err := client.Get(context.Background(), req1)
+		require.NoError(t, err)
+		assert.NotNil(t, p1)
+		assert.Equal(t, p1.Name, req.Name)
+		assert.NotEmpty(t, p1.Id)
+
+		updatedReq := &gen.UpdateProductRequest{
+			Id:   res.Id,
+			Name: "Updated-Product",
+		}
+
+		_, err = client.Update(context.Background(), updatedReq)
+		require.NoError(t, err)
+
+		req2 := &gen.GetProductRequest{
+			Id: updatedReq.Id,
+		}
+		p2, err := client.Get(context.Background(), req2)
+		require.NoError(t, err)
+		assert.NotNil(t, p2)
+		assert.Equal(t, p2.Name, updatedReq.Name)
+		assert.NotEmpty(t, p2.Id)
+	})
+
+	t.Run("valid product deletion", func(t *testing.T) {
+		client := gen.NewProductHandlerClient(conn)
+
+		req := &gen.CreateProductRequest{
+			Name: "Test-Product-001",
+		}
+
+		res, err := client.Create(context.Background(), req)
+		require.NoError(t, err)
+
+		req1 := &gen.GetProductRequest{
+			Id: res.Id,
+		}
+		p1, err := client.Get(context.Background(), req1)
+		require.NoError(t, err)
+		assert.NotNil(t, p1)
+		assert.Equal(t, p1.Name, req.Name)
+		assert.NotEmpty(t, p1.Id)
+
+		delReq := &gen.DeleteProductRequest{
+			Id: res.Id,
+		}
+
+		_, err = client.Delete(context.Background(), delReq)
+		require.NoError(t, err)
+
+		req2 := &gen.GetProductRequest{
+			Id: res.Id,
+		}
+		_, err = client.Get(context.Background(), req2)
+		assert.Error(t, app.ErrProductNotFound, err)
+	})
 }

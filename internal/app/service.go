@@ -7,6 +7,8 @@ import (
 	"github.com/google/uuid"
 )
 
+var ErrProductNotFound = fmt.Errorf("product not found")
+
 type Product struct {
 	Id   string
 	Name string
@@ -55,7 +57,7 @@ func (s *ProductService) Get(id string) (*Product, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("product not found")
+	return nil, ErrProductNotFound
 }
 
 func (s *ProductService) Update(u *Product) {
